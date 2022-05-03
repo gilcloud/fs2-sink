@@ -7,3 +7,4 @@ dev.env
 .metals
 .vscode
 target/
+git
