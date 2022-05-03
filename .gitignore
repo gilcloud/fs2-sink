@@ -1,2 +1,9 @@
 *.class
 *.log
+dev.env
+.idea
+*.iml
+.DS_Store
+.metals
+.vscode
+target/
