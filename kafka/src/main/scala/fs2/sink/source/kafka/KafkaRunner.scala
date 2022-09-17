@@ -4,13 +4,11 @@ import _root_.vulcan.Codec
 import cats.effect.{IO, Resource}
 import fs2.kafka._
 import fs2.kafka.vulcan.{Auth, AvroSettings, SchemaRegistryClientSettings, avroDeserializer}
-import fs2.sink.core.{KeyExtract, SinkAlgebra}
+import fs2.sink.core.{KeyEx, SinkAlgebra}
 
 import scala.concurrent.duration.DurationInt
 
 object KafkaRunner {
-
-  type KeyEx[V] = Option[KeyExtract[V, Option[String]]]
 
   def runner[V: KeyEx: Codec, O](
       kafkaConfig: KafkaConfig,

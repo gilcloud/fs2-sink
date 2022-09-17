@@ -1,10 +1,11 @@
 ThisBuild / scalaVersion := "2.13.8"
-ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / version := "0.1.1-SNAPSHOT"
 ThisBuild / organization := "com.gilcloud.fs2"
 ThisBuild / organizationName := "gilcloud"
 ThisBuild / organizationHomepage := Some(url("http://gilcloud.com/"))
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+sonatypeProfileName := "com.gilcloud"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
