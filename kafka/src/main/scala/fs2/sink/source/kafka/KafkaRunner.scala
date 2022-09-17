@@ -4,13 +4,11 @@ import _root_.vulcan.Codec
 import cats.effect.{IO, Resource}
 import fs2.kafka._
 import fs2.kafka.vulcan.{Auth, AvroSettings, SchemaRegistryClientSettings, avroDeserializer}
-import fs2.sink.core.{KeyExtract, SinkAlgebra}
+import fs2.sink.core.{KeyEx, SinkAlgebra}
 
 import scala.concurrent.duration.DurationInt
 
 object KafkaRunner {
-
-  type KeyEx[V] = Option[KeyExtract[V, Option[String]]]
 
   def runner[V: KeyEx: Codec, O](
       kafkaConfig: KafkaConfig,
@@ -23,22 +21,21 @@ object KafkaRunner {
         kafkaCon <- kafkaResource
         sink <- sinkResource
       } yield (kafkaCon, sink))
-        .use(rune[V, O])
+        .use(rune[V, O](kafkaConfig.inputTopic))
     } yield ()
 
-  def rune[V, O](resource: (KafkaConsumer[IO, Option[String], V], SinkAlgebra[IO, Option[String], V, O])): IO[Unit] = resource match {
+  def rune[V, O](topic: String)(resource: (KafkaConsumer[IO, Option[String], V], SinkAlgebra[IO, Option[String], V, O])): IO[Unit] = resource match {
     case (consumer, client) =>
-      consumer.subscribeTo("") >>
+      consumer.subscribeTo(topic) >>
         consumer.stream
-          .mapAsync(8) { committable =>
+          .mapAsync(25) { committable =>
             client
-              .getRecord(committable.record.toInputRecord)
+              .updateRecord(committable.record.toInputRecord)
               .flatMap(IO.println)
               .as(committable.offset)
           }
           .through(commitBatchWithin(500, 10.seconds))
           .metered(25.milliseconds)
-          .take(2)
           .compile
           .drain
   }

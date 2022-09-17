@@ -2,10 +2,6 @@ import Dependencies._
 import sbt.ThisBuild
 
 lazy val commonSettings = Seq(
-  ThisBuild / scalaVersion := "2.13.8",
-  ThisBuild / version := "0.1.0-SNAPSHOT",
-  ThisBuild / organization := "com.gilcloud",
-  ThisBuild / organizationName := "gilcloud",
   addCompilerPlugin("org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 )
